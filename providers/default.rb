@@ -60,7 +60,7 @@ action :remove do
     package_name = @current_resource.package
     converge_by("uninstall package #{package_name}") do
       execute "uninstall package #{package_name}" do
-        command "#{::ChocolateyHelpers.chocolatey_executable} uninstall -y #{package_name}"
+        command "#{::ChocolateyHelpers.chocolatey_executable} uninstall --yes #{package_name}"
       end
     end
   else
@@ -70,8 +70,8 @@ end
 
 def cmd_args
   output = ''
-  output += " -source #{@current_resource.source}" if @current_resource.source
-  output += " -ia '#{@current_resource.args}'" unless @current_resource.args.to_s.empty?
+  output += " --source=#{@current_resource.source}" if @current_resource.source
+  output += " --install-arguments='#{@current_resource.args}'" unless @current_resource.args.to_s.empty?
   @current_resource.options.each do |k, v|
     output += " -#{k}"
     output += " #{v}" if v
@@ -117,18 +117,18 @@ end
 
 def install(name)
   execute "install package #{name}" do
-    command "#{::ChocolateyHelpers.chocolatey_executable} install -y #{cmd_args} #{name}"
+    command "#{::ChocolateyHelpers.chocolatey_executable} install --yes #{cmd_args} #{name}"
   end
 end
 
 def upgrade(name)
   execute "updating #{name} to latest" do
-    command "#{::ChocolateyHelpers.chocolatey_executable} upgrade -y #{cmd_args} #{name}"
+    command "#{::ChocolateyHelpers.chocolatey_executable} upgrade --yes #{cmd_args} #{name}"
   end
 end
 
 def install_version(name, version)
   execute "install package #{name} version #{version}" do
-    command "#{::ChocolateyHelpers.chocolatey_executable} install -y -version  #{version} #{cmd_args} #{name}"
+    command "#{::ChocolateyHelpers.chocolatey_executable} install --yes --version=#{version} #{cmd_args} #{name}"
   end
 end
